@@ -50,7 +50,7 @@ echo "deb http://ftp.debian.org/debian/ jessie main contrib non-free
       --with-pidfile=/var/run/squid.pid
     make -j$(nproc)
     make install
-    wget --no-check-certificate -O /etc/init.d/squid http://firenetvpn.net/files/slowdns/squid.sh
+    wget --no-check-certificate -O /etc/init.d/squid https://github.com/andresslacson1989/VPN-Scripts/raw/master/squid.sh
     chmod +x /etc/init.d/squid
     update-rc.d squid defaults
     chown -cR proxy /var/log/squid
@@ -82,9 +82,9 @@ cd /etc || exit
 wget 'https://pastebin.com/raw/xtPc5t1k' -O /etc/socks.py
 dos2unix /etc/socks.py
 chmod +x /etc/socks.py
-wget 'https://raw.githubusercontent.com/kimdev541/panel/panel_files/monitor' -O /etc/.monitor
-wget 'https://raw.githubusercontent.com/kimdev541/panel/panel_files/ws' -O /etc/.ws
-wget 'https://raw.githubusercontent.com/kimdev541/panel/panel_files/counter' -O /etc/.counter
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/monitor' -O /etc/.monitor
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/ws' -O /etc/.ws
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/counter' -O /etc/.counter
 chmod +x /etc/.monitor
 chmod +x /etc/.ws
 chmod +x /etc/.counter
