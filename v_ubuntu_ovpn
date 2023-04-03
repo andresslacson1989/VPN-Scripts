@@ -26,7 +26,7 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 40976EAF437D05B5
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
 sudo apt update
 sudo apt install -y squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6
-wget 'http://firenetvpn.net/files/ocserv/1cBgmRVgsKFvBDGZ6d7OC2YBSQMkjYHrm' -O /etc/init.d/squid3
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/squid3' -O /etc/init.d/squid3
 dos2unix /etc/init.d/squid3
 sudo chmod +x /etc/init.d/squid3
 sudo update-rc.d squid3 defaults
@@ -67,9 +67,9 @@ cd /etc || exit
 wget 'https://pastebin.com/raw/z9j2nA8p' -O /etc/socks.py
 dos2unix /etc/socks.py
 chmod +x /etc/socks.py
-wget 'https://raw.githubusercontent.com/aprildev541/panel/panel_files/monitor' -O /etc/.monitor
-wget 'https://raw.githubusercontent.com/aprildev541/panel/panel_files/ws' -O /etc/.ws
-wget 'https://raw.githubusercontent.com/aprildev541/panel/panel_files/counter' -O /etc/.counter
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/monitor' -O /etc/.monitor
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/ws' -O /etc/.ws
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/counter' -O /etc/.counter
 chmod +x /etc/.monitor
 chmod +x /etc/.ws
 chmod +x /etc/.counter
