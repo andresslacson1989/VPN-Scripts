@@ -40,7 +40,7 @@ make install
 cd .. && rm -rf squid*
 useradd squid
 chown -R squid:squid /var/log/squid
-wget -qO /etc/init.d/squid 'https://raw.githubusercontent.com/Bonveio/BonvScripts/master/squid3.init'
+wget -qO /etc/init.d/squid 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/squid3.init'
 chmod +x /etc/init.d/squid
 
 cd /etc/squid/
