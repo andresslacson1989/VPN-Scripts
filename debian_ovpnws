@@ -214,10 +214,18 @@ sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/login/config.sh
 
 /bin/cat <<"EOM" >/etc/openvpn/login/auth_vpn
 #!/bin/bash
-. /etc/openvpn/login/config.sh
-Query="SELECT user_name FROM users WHERE user_name='$username' AND auth_vpn=md5('$password') AND is_freeze='0' AND duration > 0"
-user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
-[ "$user_name" != '' ] && [ "$user_name" = "$username" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'authentication failed.'; exit 1
+data=$(curl -sb -X POST $DOMAIN/api/my-panel/server/login -H "Content-Type: application/x-www-form-urlencoded" -d "login=true&username=$username&password=$password")
+
+if [[ $data == "ACCEPT" ]];
+then
+	echo $data
+	echo "$username | $password is valid"
+	exit 0
+else
+	echo $data
+	echo "$username | $password is invalid"
+	exit 1
+fi
 EOM
 
 #client-connect file
