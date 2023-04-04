@@ -231,12 +231,11 @@ EOM
 #client-connect file
 cat <<'LENZ05' >/etc/openvpn/login/connect.sh
 #!/bin/bash
-. /etc/openvpn/login/config.sh
+
 ##set status online to user connected
 server_ip=SERVER_IP
-datenow=`date +"%Y-%m-%d %T"`
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='1', device_connected='1', active_address='$server_ip', active_date='$datenow' WHERE user_name='$common_name' "
-#mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE server_list SET online=online+1 WHERE server_ip='$server_ip' "
+data=$(curl -sb -X POST $DOMAIN/api/my-panel/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=1&username=$common_name&ip=$server_ip")
+
 LENZ05
 
 sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/connect.sh
@@ -244,13 +243,12 @@ sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/connect.sh
 #TCP client-disconnect file
 cat <<'LENZ06' >/etc/openvpn/login/disconnect.sh
 #!/bin/bash
-. /etc/openvpn/login/config.sh
-server_ip=SERVER_IP
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='0', active_address='', active_date='' WHERE user_name='$common_name' "
-#mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE server_list SET online=online-1 WHERE server_ip='$server_ip' "
+
+data=$(curl -sb -X POST $DOMAIN/api/my-panel/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=0&username=$common_name")
+
 LENZ06
 
-sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/disconnect.sh
+
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/ca.crt
 -----BEGIN CERTIFICATE-----
