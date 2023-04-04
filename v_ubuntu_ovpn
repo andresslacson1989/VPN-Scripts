@@ -233,6 +233,7 @@ data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: applic
 LENZ05
 
 sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/connect.sh
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/connect.sh
 
 #TCP client-disconnect file
 cat <<'LENZ06' >/etc/openvpn/login/disconnect.sh
@@ -242,6 +243,7 @@ data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: applic
 
 LENZ06
 
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/disconnect.sh
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/ca.crt
 -----BEGIN CERTIFICATE-----
