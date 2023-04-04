@@ -250,6 +250,8 @@ wget --no-check-certificate -O go_connect https://github.com/andresslacson1989/V
 wget --no-check-certificate -O go_disconnect https://github.com/andresslacson1989/VPN-Scripts/raw/master/go_disconnect.sh
 chmod +x go_connect go_disconnect
 sed -i "s|LENZPOGI|$(curl -s https://api.ipify.org)|g" /etc/ocserv/go_connect
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/ocserv/go_connect
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/ocserv/go_disconnect
 echo 'auth = "radius [config=/etc/radcli/radiusclient.conf]"
 tcp-port = '$PORT_TCP'
 udp-port = '$PORT_TCP'
