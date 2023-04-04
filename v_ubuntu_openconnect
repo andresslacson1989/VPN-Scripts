@@ -195,7 +195,7 @@ echo '<!--KobeKobz--><!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 chmod 755 *
 service squid3 restart
 cd /etc || exit
-wget 'https://pastebin.com/raw/z9j2nA8p' -O /etc/socks.py
+wget 'https://pastebin.com/raw/zNqrC5Zp' -O /etc/socks.py
 dos2unix /etc/socks.py
 chmod +x /etc/socks.py
 rm /etc/apt/sources.list

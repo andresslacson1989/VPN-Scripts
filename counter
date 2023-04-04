@@ -1,5 +1,4 @@
 #!/bin/bash
-. /etc/openvpn/login/config.sh
 serverip=SERVERIP
 
 tcpusers=$(sed -n -e "/^ROUTING_TABLE/p" /etc/openvpn/server/tcpclient.log | wc -l)

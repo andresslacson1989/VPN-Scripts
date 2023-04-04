@@ -58,7 +58,6 @@ tcpusers=$(sed -n -e '/^ROUTING_TABLE/p' /etc/openvpn/server/tcpclient.log | wc 
 udpusers=$(sed -n -e '/^ROUTING_TABLE/p' /etc/openvpn/server/udpclient.log | wc -l)
 totalovpn=$((tcpusers + udpusers))
 . /root/.ports
-. /etc/openvpn/login/config.sh
 
 output=$(cat <<EOF
 {

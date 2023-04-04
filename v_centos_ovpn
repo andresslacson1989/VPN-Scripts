@@ -71,7 +71,7 @@ chkconfig squid on
 service squid restart
 cd /etc || exit
 
-wget 'https://pastebin.com/raw/z9j2nA8p' -O /etc/socks.py
+wget 'https://pastebin.com/raw/zNqrC5Zp' -O /etc/socks.py
 dos2unix /etc/socks.py
 chmod +x /etc/socks.py
 wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/monitor' -O /etc/.monitor
