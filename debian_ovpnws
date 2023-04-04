@@ -214,7 +214,7 @@ sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/login/config.sh
 
 /bin/cat <<"EOM" >/etc/openvpn/login/auth_vpn
 #!/bin/bash
-data=$(curl -sb -X POST $DOMAIN/api/server/login -H "Content-Type: application/x-www-form-urlencoded" -d "login=true&username=$username&password=$password")
+data=$(curl -sb -X POST DOMAIN/api/server/login -H "Content-Type: application/x-www-form-urlencoded" -d "login=true&username=$username&password=$password")
 
 if [[ $data == "ACCEPT" ]];
 then
@@ -228,13 +228,15 @@ else
 fi
 EOM
 
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/auth_vpn
+
 #client-connect file
 cat <<'LENZ05' >/etc/openvpn/login/connect.sh
 #!/bin/bash
 
 ##set status online to user connected
 server_ip=SERVER_IP
-data=$(curl -sb -X POST $DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=1&username=$common_name&ip=$server_ip")
+data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=1&username=$common_name&ip=$server_ip")
 
 LENZ05
 
@@ -244,7 +246,7 @@ sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/connect.sh
 cat <<'LENZ06' >/etc/openvpn/login/disconnect.sh
 #!/bin/bash
 
-data=$(curl -sb -X POST $DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=0&username=$common_name")
+data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=0&username=$common_name")
 
 LENZ06
 
