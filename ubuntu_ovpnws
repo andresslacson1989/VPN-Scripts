@@ -971,7 +971,6 @@ cat << "EOM" > /etc/openvpn/server/disconnect.sh
 #!/bin/bash
 
 data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=0&username=$common_name")
-sql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='0', active_address='', active_date='' WHERE user_name='$common_name' "
 
 EOM
 sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/server/disconnect.sh
