@@ -772,7 +772,7 @@ max-clients 1024
 status /var/www/html/stat/status.txt
 log /etc/openvpn/server/tcpserver.log
 auth-user-pass-verify "/etc/openvpn/server/auth_vpn" via-file
-connect /etc/openvpn/server/connect.sh
+client-connect /etc/openvpn/server/connect.sh
 client-disconnect /etc/openvpn/server/disconnect.sh
 push "cipher AES-128-GCM"' > /etc/openvpn/server.conf
 
