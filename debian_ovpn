@@ -124,7 +124,7 @@ dh none
 tls-server
 tls-version-min 1.2
 tls-cipher TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256
-cipher none
+cipher AES-128-GCM
 ncp-disable
 auth none
 sndbuf 0
@@ -140,6 +140,7 @@ client-to-client
 username-as-common-name
 verify-client-cert none
 script-security 3
+max-clients 1024
 duplicate-cn
 client-connect /etc/openvpn/login/connect.sh
 client-disconnect /etc/openvpn/login/disconnect.sh
@@ -171,7 +172,7 @@ dh none
 tls-server
 tls-version-min 1.2
 tls-cipher TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256
-cipher none
+cipher AES-128-GCM
 ncp-disable
 auth none
 sndbuf 0
@@ -187,6 +188,7 @@ client-to-client
 username-as-common-name
 verify-client-cert none
 script-security 3
+max-clients 1024
 duplicate-cn
 socket-flags TCP_NODELAY
 client-connect /etc/openvpn/login/connect.sh
